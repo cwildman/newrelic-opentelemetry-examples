@@ -49,7 +49,7 @@ Exercise logs in context by calling the `GET /ping`, which generated a log messa
 curl http://localhost:8080/ping
 ```
 
-You should be able to see a mix of trace and log data flowing through the collector. If you navigate to the distributed traces of the application in [New Relic One](https://one.newrelic.com/), you should be able to find traces related to the call to `GET /ping`, and see the logs in context:
+You should be able to see a mix of trace, log and metric data flowing through the collector. If you navigate to the distributed traces of the application in [New Relic One](https://one.newrelic.com/), you should be able to find traces related to the call to `GET /ping`, and see the logs in context:
 
 _Trace With Logs_
 ![](trace-with-logs.png)

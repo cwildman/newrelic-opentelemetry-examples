@@ -1,6 +1,11 @@
 package com.newrelic.app;
 
 import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.common.AttributeKey;
+import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.metrics.GlobalMeterProvider;
+import io.opentelemetry.api.metrics.LongCounter;
+import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
@@ -15,6 +20,9 @@ public class Controller {
 
   private static final Tracer TRACER =
       GlobalOpenTelemetry.getTracerProvider().get(Application.class.getName());
+  private static final Meter METER = GlobalMeterProvider.get().get(Application.class.getName());
+  private final LongCounter MY_COUNTER =
+      METER.counterBuilder("my-custom-counter").setDescription("A counter to count things").build();
   private static final Logger logger = LogManager.getLogger(Controller.class);
 
   @GetMapping("/ping")
@@ -31,6 +39,7 @@ public class Controller {
     try (var scope = span.makeCurrent()) {
       var sleepTime = new Random().nextInt(200);
       Thread.sleep(sleepTime);
+      MY_COUNTER.add(sleepTime, Attributes.of(AttributeKey.stringKey("method"), "ping"));
       logger.info("A sample log message!");
       return "pong";
     } finally {
